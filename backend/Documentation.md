@@ -2,14 +2,14 @@
 
 Topics
 --------------------------------
-[About](#about-utrivia-api)    
+[About](#about-utrivia-api)
 Setup
 
 - [Backend](#backend-setup)
 - [Frontend](#front-end-setup)
 
-[EndPoints](#endpoints)        
-[Testing](#unit-testing)       
+[EndPoints](#endpoints)
+[Testing](#unit-testing)
 [Contributions](#contributing)
 
 # About uTrivia API
@@ -28,33 +28,33 @@ root of the Application
 
 **Upgrade pip**
 
-```  
-python3 -m pip install --user --upgrade pip  
-```  
+```
+python3 -m pip install --user --upgrade pip
+```
 
 **Install virtualenv**
 
-```bash  
-python3 -m pip install --user virtualenv  
-```  
+```bash
+python3 -m pip install --user virtualenv
+```
 
 **Create a virtual env**
 
-```bash  
-python3 -m venv env  
-```  
+```bash
+python3 -m venv env
+```
 
 **Activate a virtual env**
 
-```bash  
-source env/bin/activate  
-```  
+```bash
+source env/bin/activate
+```
 
 **Install packages**
 
-```bash  
-python3 -m pip install -r requirements.txt  
-```  
+```bash
+python3 -m pip install -r requirements.txt
+```
 
 **Set the App and Debug Parameters**
 
@@ -75,16 +75,16 @@ application using frontend frameworks such as VueJS, Angular etc.
 
 Navigate to frontend folder by typing 📁 `cd frontend`  from the root directory of the Application.
 
-```bash  
+```bash
 npm install && npm start
-```  
+```
 
 # EndPoints
 
 ### All Categories
 
-- Method **GET**
-- Endpoint `/api/v1/categories`
+- Method: **GET**
+- Endpoint: `/api/v1/categories`
 
 **Response Object**
 ``Status: 200 OK`` 🟢
@@ -107,8 +107,8 @@ npm install && npm start
 
 ### Paginated Questions
 
-- Method **GET**
-- Endpoint `/api/v1/questions?page=1`
+- Method: **GET**
+- Endpoint: `/api/v1/questions?page=1`
 
 **Response Object**
 ``Status: 200 OK`` 🟢
@@ -148,11 +148,12 @@ npm install && npm start
 ```
 
 ### Get Questions by Category
-
-- Method **GET**
-- Endpoint `/api/v1/categories/<int: categoty_id>/questions`
+The Get Question by Category Endpoints will return all questions for a given category, total number of returned questions and category id that was passed as part of the URL.
+- Method: **GET**
+- Endpoint: `/api/v1/categories/{categoty_id}/questions`
 
 **Response Object**
+``Status: 200 OK`` 🟢
 
 ```json
 {
@@ -179,9 +180,9 @@ npm install && npm start
 ```
 
 ### Search Question
-
-- Method **POST**
-- Endpoint `/api/v1/questions`
+This endpoint takes a very specific payload with `searchTerm` as the only parameter. A successful request will return a list of questions, success flag, and total_questions, with a ``200`` status code.
+- Method: **POST**
+- Endpoint: `/api/v1/questions`
 
 **Payload**
 
@@ -219,9 +220,9 @@ npm install && npm start
 ```
 
 ### Create a new Question
-
-- Method **POST**
-- Endpoint `/api/v1/questions`
+Creates a new question  based on the supplied payload, it returns a ``201`` status code and success message if successful, and a ``422`` error code if unsuccessful.
+- Method: **POST**
+- Endpoint: `/api/v1/questions`
 
 **Payload**
 
@@ -246,11 +247,11 @@ npm install && npm start
 
 ### Play Quiz
 
-Returns a random question object based on the provided `category` and array of question ids. Throws 404 if no questions
-meet the filter criteria, or 422 if the category is not a number or previous questions is not an array or array of ids 
+Returns a random question object based on the provided `category` and array of question ids. Throws ``404`` if no questions
+meet the filter criteria, or ``422`` if the category is not a number or previous questions is not an array or array of ids
 
-- Method **POST**
-- Endpoint `/api/v1/quizzes`
+- Method: **POST**
+- Endpoint: `/api/v1/quizzes`
 
 **Payload**
 
@@ -286,8 +287,8 @@ meet the filter criteria, or 422 if the category is not a number or previous que
 Deletes a question based on the ID passed as part of the endpoint. Throws 404 if the `id` is not found or 422 is not a
 number.
 
-- Method **DELETE**
-- Endpoint`/api/v1/questions/<int: question_id>`
+- Method: **DELETE**
+- Endpoint:`/api/v1/questions/<int: question_id>`
 
 **Response Object**
 ``Status: 200 OK`` 🟢
