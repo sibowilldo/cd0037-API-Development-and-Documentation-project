@@ -1,314 +1,105 @@
-# Contents
+# Backend - Trivia API
 
-Topics
---------------------------------
-[About](#about-utrivia-api)
-Setup
+## Setting up the Backend
 
-- [Backend](#backend-setup)
-- [Frontend](#front-end-setup)
+### Install Dependencies
 
-[EndPoints](#endpoints)
-[Testing](#unit-testing)
-[Contributions](#contributing)
+1. **Python 3.7** - Follow instructions to install the latest version of python for your platform in the [python docs](https://docs.python.org/3/using/unix.html#getting-and-installing-the-latest-version-of-python)
 
-# About uTrivia API
+2. **Virtual Environment** - We recommend working within a virtual environment whenever using Python for projects. This keeps your dependencies for each project separate and organized. Instructions for setting up a virual environment for your platform can be found in the [python docs](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
 
-uTrivia API is a RESTful...
-
-## Backend Setup
-
-The Backend of uTrivia API is built with 🐍 Python 3.10 and Flask 2.2.2. To get started with the backend setup, we highly
-recommend following the instructions below which help you set up a virtual python environment, however you're more than
-welcome to use other environments you may already have on your system provided they meet the package requirements
-included in the requirements.txt file.
-
-To get started make sure you are in the backend directory by running this command 📁`cd backend` on the terminal from the
-root of the Application
-
-**Upgrade pip**
-
-```
-python3 -m pip install --user --upgrade pip
-```
-
-**Install virtualenv**
+3. **PIP Dependencies** - Once your virtual environment is setup and running, install the required dependencies by navigating to the `/backend` directory and running:
 
 ```bash
-python3 -m pip install --user virtualenv
+pip install -r requirements.txt
 ```
 
-**Create a virtual env**
+#### Key Pip Dependencies
+
+- [Flask](http://flask.pocoo.org/) is a lightweight backend microservices framework. Flask is required to handle requests and responses.
+
+- [SQLAlchemy](https://www.sqlalchemy.org/) is the Python SQL toolkit and ORM we'll use to handle the lightweight SQL database. You'll primarily work in `app.py`and can reference `models.py`.
+
+- [Flask-CORS](https://flask-cors.readthedocs.io/en/latest/#) is the extension we'll use to handle cross-origin requests from our frontend server.
+
+### Set up the Database
+
+With Postgres running, create a `trivia` database:
 
 ```bash
-python3 -m venv env
+createbd trivia
 ```
 
-**Activate a virtual env**
+Populate the database using the `trivia.psql` file provided. From the `backend` folder in terminal run:
 
 ```bash
-source env/bin/activate
+psql trivia < trivia.psql
 ```
 
-**Install packages**
+### Run the Server
+
+From within the `./src` directory first ensure you are working using your created virtual environment.
+
+To run the server, execute:
 
 ```bash
-python3 -m pip install -r requirements.txt
+flask run --reload
 ```
 
-**Set the App and Debug Parameters**
+The `--reload` flag will detect file changes and restart the server automatically.
 
- ```bash
- export FLASK_APP=flaskr FLASK_DEBUG=True
- ```
+## To Do Tasks
 
-**Run the App**
+These are the files you'd want to edit in the backend:
+
+1. `backend/flaskr/__init__.py`
+2. `backend/test_flaskr.py`
+
+One note before you delve into your tasks: for each endpoint, you are expected to define the endpoint and response data. The frontend will be a plentiful resource because it is set up to expect certain endpoints and response data formats already. You should feel free to specify endpoints in your own way; if you do so, make sure to update the frontend or you will get some unexpected behavior.
+
+1. Use Flask-CORS to enable cross-domain requests and set response headers.
+2. Create an endpoint to handle `GET` requests for questions, including pagination (every 10 questions). This endpoint should return a list of questions, number of total questions, current category, categories.
+3. Create an endpoint to handle `GET` requests for all available categories.
+4. Create an endpoint to `DELETE` a question using a question `ID`.
+5. Create an endpoint to `POST` a new question, which will require the question and answer text, category, and difficulty score.
+6. Create a `POST` endpoint to get questions based on category.
+7. Create a `POST` endpoint to get questions based on a search term. It should return any questions for whom the search term is a substring of the question.
+8. Create a `POST` endpoint to get questions to play the quiz. This endpoint should take a category and previous question parameters and return a random questions within the given category, if provided, and that is not one of the previous questions.
+9. Create error handlers for all expected errors including 400, 404, 422, and 500.
+
+## Documenting your Endpoints
+
+You will need to provide detailed documentation of your API endpoints including the URL, request parameters, and the response body. Use the example below as a reference.
+
+### Documentation Example
+
+`GET '/api/v1.0/categories'`
+
+- Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
+- Request Arguments: None
+- Returns: An object with a single key, `categories`, that contains an object of `id: category_string` key: value pairs.
+
+```json
+{
+  "1": "Science",
+  "2": "Art",
+  "3": "Geography",
+  "4": "History",
+  "5": "Entertainment",
+  "6": "Sports"
+}
+```
+
+## Testing
+
+Write at least one test for the success and at least one error behavior of each endpoint using the unittest library.
+
+To deploy the tests, run
 
 ```bash
-flask run
+dropdb trivia_test
+createdb trivia_test
+psql trivia_test < trivia.psql
+python test_flaskr.py
 ```
 
-## Front End Setup
-
-The frontend we've provided to help you get started is a ReactJS application, but feel free to code yourself another
-application using frontend frameworks such as VueJS, Angular etc.
-
-Navigate to frontend folder by typing 📁 `cd frontend`  from the root directory of the Application.
-
-```bash
-npm install && npm start
-```
-
-# EndPoints
-
-### All Categories
-
-- Method: **GET**
-- Endpoint: `/api/v1/categories`
-
-**Response Object**
-``Status: 200 OK`` 🟢
-
-```json
-{
-  "categories": [
-    {
-      "id": 1,
-      "type": "Science"
-    },
-    {
-      "id": 2,
-      "type": "Art"
-    }
-  ],
-  "success": true
-}
-```
-
-### Paginated Questions
-
-- Method: **GET**
-- Endpoint: `/api/v1/questions?page=1`
-
-**Response Object**
-``Status: 200 OK`` 🟢
-
-```json
-{
-  "categories": [
-    {
-      "id": 1,
-      "type": "Science"
-    },
-    {
-      "id": 2,
-      "type": "Art"
-    }
-  ],
-  "questions": [
-    {
-      "answer": "Apollo 13",
-      "category": 5,
-      "difficulty": 4,
-      "id": 2,
-      "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
-    },
-    {
-      "answer": "Tom Cruise",
-      "category": 5,
-      "difficulty": 4,
-      "id": 4,
-      "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
-    }
-  ],
-  "current_category": 1,
-  "success": true,
-  "total_questions": 21
-}
-```
-
-### Get Questions by Category
-The Get Question by Category Endpoints will return all questions for a given category, total number of returned questions and category id that was passed as part of the URL.
-- Method: **GET**
-- Endpoint: `/api/v1/categories/{categoty_id}/questions`
-
-**Response Object**
-``Status: 200 OK`` 🟢
-
-```json
-{
-  "questions": [
-    {
-      "answer": "Escher",
-      "category": 2,
-      "difficulty": 1,
-      "id": 16,
-      "question": "Which Dutch graphic artist–initials M C was a creator of optical illusions?"
-    },
-    {
-      "answer": "Mona Lisa",
-      "category": 2,
-      "difficulty": 3,
-      "id": 17,
-      "question": "La Giaconda is better known as what?"
-    }
-  ],
-  "success": true,
-  "current_category": 2,
-  "total_questions": 4
-}
-```
-
-### Search Question
-This endpoint takes a very specific payload with `searchTerm` as the only parameter. A successful request will return a list of questions, success flag, and total_questions, with a ``200`` status code.
-- Method: **POST**
-- Endpoint: `/api/v1/questions`
-
-**Payload**
-
-```json
-{
-  "searchTerm": "title"
-}
-```
-
-**Response Object**
-``Status: 200 OK`` 🟢
-
-```json
-{
-  "questions": [
-    {
-      "answer": "Maya Angelou",
-      "category": 4,
-      "difficulty": 2,
-      "id": 5,
-      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
-    },
-    {
-      "answer": "Edward Scissorhands",
-      "category": 5,
-      "difficulty": 3,
-      "id": 6,
-      "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
-    }
-  ],
-  "success": true,
-  "current_category": null,
-  "total_questions": 2
-}
-```
-
-### Create a new Question
-Creates a new question  based on the supplied payload, it returns a ``201`` status code and success message if successful, and a ``422`` error code if unsuccessful.
-- Method: **POST**
-- Endpoint: `/api/v1/questions`
-
-**Payload**
-
-```json
-{
-  "questions": "How many countries are there in Africa?",
-  "answer": "Africa has 54 countries",
-  "difficulty": 3,
-  "category": 3
-}
-```
-
-**Response Object**
-``Status: 201 CREATED`` 🟢
-
-```json
-{
-  "message": "Question saved!",
-  "success": true
-}
-```
-
-### Play Quiz
-
-Returns a random question object based on the provided `category` and array of question ids. Throws ``404`` if no questions
-meet the filter criteria, or ``422`` if the category is not a number or previous questions is not an array or array of ids
-
-- Method: **POST**
-- Endpoint: `/api/v1/quizzes`
-
-**Payload**
-
-```json
-{
-  "previous_questions": [
-    5,
-    9,
-    12
-  ],
-  "quiz_category": 4
-}
-```
-
-**Response Object**
-``Status: 200 OK`` 🟢
-
-```json
-{
-  "question": {
-    "answer": "Scarab",
-    "category": 4,
-    "difficulty": 4,
-    "id": 23,
-    "question": "Which dung beetle was worshipped by the ancient Egyptians?"
-  },
-  "success": true
-}
-```
-
-### Delete Question by ID
-
-Deletes a question based on the ID passed as part of the endpoint. Throws 404 if the `id` is not found or 422 is not a
-number.
-
-- Method: **DELETE**
-- Endpoint:`/api/v1/questions/<int: question_id>`
-
-**Response Object**
-``Status: 200 OK`` 🟢
-
-```json
-{
-  "deleted_question": 2,
-  "success": true
-}
-```
-
-# Unit Testing
-
-uTrivia API comes with Unit Test that you can run with the command below.
-The test file is found in 📁 `backend` directory.
-
-```bash
-python3 test_flaskr.py
-```
-
-# Contributing
-
-> uTrivia API is licensed under the [Udacity License](#).
