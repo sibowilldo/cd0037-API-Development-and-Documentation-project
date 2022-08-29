@@ -77,6 +77,10 @@ npm install && npm start
 
 -----
 
+### Base URL
+> ``http://localhost:5000/api/v1``
+
+
 ### All Categories
 
 Retrieved all categories.
