@@ -1,10 +1,13 @@
 import os
 import unittest
 import json
-from flask_sqlalchemy import SQLAlchemy
-
 from flaskr import create_app
+from flask_sqlalchemy import SQLAlchemy
 from models import setup_db, Question, Category
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 class TriviaTestCase(unittest.TestCase):
@@ -16,9 +19,14 @@ class TriviaTestCase(unittest.TestCase):
         """Define test variables and initialize app."""
         self.app = create_app()
         self.client = self.app.test_client
-        self.database_name = "test_udacity_trivia"
-        self.database_path = 'postgresql://{}:{}@{}/{}'.format('postgres', 'Password01!', 'localhost:5432',
-                                                               self.database_name)
+
+        self.db_name = os.getenv("TEST_DB_DATABASE")
+        self.db_user = os.getenv("TEST_DB_USER")
+        self.db_password = os.getenv("TEST_DB_PASSWORD")
+        self.db_host = f"{os.getenv('TEST_DB_HOST')}:{os.getenv('TEST_DB_PORT')}"
+
+        self.database_path = f'postgresql://{self.db_user}:{self.db_password}@{self.db_host}/{self.db_name}'
+
         setup_db(self.app, self.database_path)
 
         # binds the app to the current context
@@ -208,7 +216,7 @@ class TriviaTestCase(unittest.TestCase):
     def test_play_quiz_returns_422_if_category_is_no_acceptable(self):
         quiz_question = self.quiz_question
         quiz_question["quiz_category"] = "Not a Number"
-        
+
         response = self.client().post("/api/v1/quizzes", json=quiz_question)
         data = json.loads(response.data)
 

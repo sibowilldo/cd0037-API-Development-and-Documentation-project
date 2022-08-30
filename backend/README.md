@@ -48,7 +48,13 @@ source env/bin/activate
 ```bash
 python3 -m pip install -r requirements.txt
 ```
+**Set the Project Environment Variables**
 
+The project environment variables are located in the root folder of the project. 
+Simply rename or copy the ``.env-sample`` file to ``.env`` and edit the file as needed
+```bash
+cp .env-sample .env
+```
 **Set the App and Debug Parameters**
 
  ```bash

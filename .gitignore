@@ -9,7 +9,9 @@ venv
 ._*
 .Spotlight-V100
 .Trashes
+.idea/
 ehthumbs.db
 Thumbs.db
 env/
 frontend/node_modules/
+/.env
