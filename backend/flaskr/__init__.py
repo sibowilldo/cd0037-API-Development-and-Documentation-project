@@ -15,7 +15,8 @@ def create_app(test_config=None):
     app = Flask(__name__)
     setup_db(app)
     """
-    @TODO DONE: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
+    @TODO DONE: Set up CORS. Allow '*' for origins.
+    Delete the sample route after completing the TODOs
     """
     CORS(app, resources={r"/api/*": {"origins": "*"}})
 
@@ -25,8 +26,10 @@ def create_app(test_config=None):
 
     @app.after_request
     def after_request(response):
-        response.headers.add("Access-Control-Allow-Headers", "Content-Type:, Authorization,True")
-        response.headers.add("Access-Control-Allow-Methods", "GET,PUT,PATCH,POST,DELETE,OPTIONS")
+        response.headers.add("Access-Control-Allow-Headers",
+                             "Content-Type:, Authorization,True")
+        response.headers.add("Access-Control-Allow-Methods",
+                             "GET,PUT,PATCH,POST,DELETE,OPTIONS")
         return response
 
     """
@@ -52,17 +55,21 @@ def create_app(test_config=None):
 
     TEST: At this point, when you start the application
     you should see questions and categories generated,
-    ten questions per page and pagination at the bottom of the screen for three pages.
+    ten questions per page and pagination at the bottom
+    of the screen for three pages.
     Clicking on the page numbers should update the questions.
     """
 
     @app.route("/api/v1/questions")
     def get_all_questions():
         page = request.args.get("page", 1, int)
-        questions = Question.query.order_by(Question.id).paginate(page=page, per_page=QUESTIONS_PER_PAGE,
-                                                                  error_out=True)
+        questions = Question.query.order_by(Question.id) \
+            .paginate(page=page,
+                      per_page=QUESTIONS_PER_PAGE,
+                      error_out=True)
         total_questions = questions.total
-        questions = list(map(lambda question: question.format(), questions.items))
+        questions = list(
+            map(lambda question: question.format(), questions.items))
 
         categories = Category.query.all()
         categories = list(map(lambda category: category.format(), categories))
@@ -77,13 +84,16 @@ def create_app(test_config=None):
     @TODO DONE:
     Create an endpoint to DELETE question using a question ID.
 
-    TEST: When you click the trash icon next to a question, the question will be removed.
+    TEST: When you click the trash icon next to a question,
+    the question will be removed.
     This removal will persist in the database and when you refresh the page.
     """
 
     @app.delete("/api/v1/questions/<int:question_id>")
     def delete_question_by_id(question_id):
-        question = Question.query.filter(Question.id == question_id).first_or_404(description="Question not found.")
+        question = Question.query.filter(
+            Question.id == question_id).first_or_404(
+            description="Question not found.")
         question.delete()
         return jsonify({"success": True,
                         "deleted_question": question_id}), 200
@@ -95,7 +105,8 @@ def create_app(test_config=None):
     category, and difficulty score.
 
     TEST: When you submit a question on the "Add" tab,
-    the form will clear and the question will appear at the end of the last page
+    the form will clear and the question will appear
+    at the end of the last page
     of the questions list in the "List" tab.
     """
 
@@ -130,11 +141,13 @@ def create_app(test_config=None):
             new_answer = req.get("answer", None)
             new_difficulty = req.get("difficulty", 1)
             new_category = req.get("category", None)
-            question = Question(new_question, new_answer, new_category, new_difficulty)
+            question = Question(new_question, new_answer, new_category,
+                                new_difficulty)
 
             question.insert()
 
-            return jsonify({"success": True, "message": "Question saved!"}), 201
+            return jsonify(
+                {"success": True, "message": "Question saved!"}), 201
         except Exception:
             raise UnprocessableEntity
 
@@ -150,8 +163,10 @@ def create_app(test_config=None):
     @app.get('/api/v1/categories/<int:category_id>/questions')
     def get_questions_by_category(category_id):
         try:
-            questions = Question.query.order_by(Question.id).filter(Question.category == category_id).all()
-            questions = list(map(lambda question: question.format(), questions))
+            questions = Question.query.order_by(Question.id).filter(
+                Question.category == category_id).all()
+            questions = list(
+                map(lambda question: question.format(), questions))
 
             return jsonify({"success": True,
                             "questions": questions,
@@ -180,17 +195,21 @@ def create_app(test_config=None):
         try:
             # Let's first check if we have whatever was passed as category_id
             # A 422 exception will be raised if anything but a number is passed
-            category = Category.query.filter(Category.id == category_id).first()
+            category = Category.query.filter(
+                Category.id == category_id).first()
             # Let's return an unfiltered query if the category is None
-            q = Question.query if category is None else Question.query.filter(Question.category == category.id)
-            # Let's chain whatever query we got from above with a Not In [] filter, and get the results
+            q = Question.query if category is None else Question.query.filter(
+                Question.category == category.id)
+            # Let's chain whatever query we got from above
+            # with a Not In [] filter, and get the results
             questions = q.filter(Question.id.not_in(prev_questions)).all()
             # Finally, let's pick a random item from the above results.
             # random.choice will raise IndexError if results empty
             question = random.choice(questions)
             return jsonify({"success": True, "question": question.format()})
         except IndexError:
-            raise NotFound(description="No questions found, that match your criteria")
+            raise NotFound(
+                description="No questions found, that match your criteria")
         except Exception:
             raise UnprocessableEntity
 
@@ -202,32 +221,38 @@ def create_app(test_config=None):
 
     @app.errorhandler(400)
     def bad_request(error):
-        description = error.description if error.description else "Bad request."
-        return jsonify({"success": False, "status_code": 400, "message": description}), 400
+        description = error.desc if error.desc else "Bad request."
+        return jsonify({"success": False, "status_code": 400,
+                        "message": description}), 400
 
     @app.errorhandler(404)
     def resource_not_found(error):
-        description = error.description if error.description else "Resource not found."
-        return jsonify({"success": False, "status_code": 404, "message": description}), 404
+        description = error.desc if error.desc else "Resource not found."
+        return jsonify({"success": False, "status_code": 404,
+                        "message": description}), 404
 
     @app.errorhandler(405)
     def method_not_allowed(error):
-        description = error.description if error.description else "Method not allowed."
-        return jsonify({"success": False, "status_code": 405, "message": description}), 405
+        description = error.desc if error.desc else "Method not allowed."
+        return jsonify({"success": False, "status_code": 405,
+                        "message": description}), 405
 
     @app.errorhandler(422)
     def unprocessable_entity(error):
-        description = error.description if error.description else "Unprocessable entity."
-        return jsonify({"success": False, "status_code": 422, "message": description}), 422
+        description = error.desc if error.desc else "Unprocessable entity."
+        return jsonify({"success": False, "status_code": 422,
+                        "message": description}), 422
 
     @app.errorhandler(429)
     def too_many_requests(error):
-        description = error.description if error.description else "Too many requests."
-        return jsonify({"success": False, "status_code": 429, "message": description}), 429
+        description = error.desc if error.desc else "Too many requests."
+        return jsonify({"success": False, "status_code": 429,
+                        "message": description}), 429
 
     @app.errorhandler(500)
     def internal_server_error(error):
-        description = error.description if error.description else "Internal Server Error."
-        return jsonify({"success": False, "status_code": 500, "message": description}), 500
+        description = error.desc if error.desc else "Internal Server Error."
+        return jsonify({"success": False, "status_code": 500,
+                        "message": description}), 500
 
     return app
