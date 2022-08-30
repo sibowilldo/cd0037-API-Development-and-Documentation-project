@@ -77,7 +77,7 @@ def create_app(test_config=None):
         return jsonify({"success": True,
                         "questions": questions,
                         "total_questions": total_questions,
-                        "current_category": categories[0]["id"],
+                        "current_category": categories[0],
                         "categories": categories}), 200
 
     """
@@ -221,37 +221,43 @@ def create_app(test_config=None):
 
     @app.errorhandler(400)
     def bad_request(error):
-        description = error.desc if error.desc else "Bad request."
+        description = error.description if error.description \
+            else "Bad request."
         return jsonify({"success": False, "status_code": 400,
                         "message": description}), 400
 
     @app.errorhandler(404)
     def resource_not_found(error):
-        description = error.desc if error.desc else "Resource not found."
+        description = error.description if error.description \
+            else "Resource not found."
         return jsonify({"success": False, "status_code": 404,
                         "message": description}), 404
 
     @app.errorhandler(405)
     def method_not_allowed(error):
-        description = error.desc if error.desc else "Method not allowed."
+        description = error.description if error.description \
+            else "Method not allowed."
         return jsonify({"success": False, "status_code": 405,
                         "message": description}), 405
 
     @app.errorhandler(422)
     def unprocessable_entity(error):
-        description = error.desc if error.desc else "Unprocessable entity."
+        description = error.description if error.description \
+            else "Unprocessable entity."
         return jsonify({"success": False, "status_code": 422,
                         "message": description}), 422
 
     @app.errorhandler(429)
     def too_many_requests(error):
-        description = error.desc if error.desc else "Too many requests."
+        description = error.description if error.description \
+            else "Too many requests."
         return jsonify({"success": False, "status_code": 429,
                         "message": description}), 429
 
     @app.errorhandler(500)
     def internal_server_error(error):
-        description = error.desc if error.desc else "Internal Server Error."
+        description = error.description if error.description \
+            else "Internal Server Error."
         return jsonify({"success": False, "status_code": 500,
                         "message": description}), 500
 
