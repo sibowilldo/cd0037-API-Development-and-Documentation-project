@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import '../stylesheets/App.css';
 import Question from './Question';
 import Search from './Search';
-import $ from 'jquery';
 
 class QuestionView extends Component {
     constructor() {
@@ -35,10 +34,8 @@ class QuestionView extends Component {
             })
             .catch(error => {
                 alert('Unable to load questions. Please try your request again')
-                console.log('Something Wrong Happened!')
-                console.log(error.message)
             })
-            .finally(()=> {
+            .finally(() => {
                 return
             })
     };
@@ -79,51 +76,46 @@ class QuestionView extends Component {
             .catch(error => {
                 alert('Unable to load questions. Please try your request again');
             })
-            .finally(()=> {
+            .finally(() => {
                 return
             })
     };
 
     submitSearch = (searchTerm) => {
-        $.ajax({
-            url: `/questions`, //TODO: update request URL
-            type: 'POST',
-            dataType: 'json',
-            contentType: 'application/json',
-            data: JSON.stringify({searchTerm: searchTerm}),
-            xhrFields: {
-                withCredentials: true,
-            },
-            crossDomain: true,
-            success: (result) => {
+        fetch('/questions', {
+            method: 'POST',
+            headers: {  'Content-Type': 'application/json' },
+            credentials:'include',
+            body: JSON.stringify({searchTerm: searchTerm})
+        })
+            .then(res => res.json())
+            .then(result => {
                 this.setState({
-                    questions: result.questions,
-                    totalQuestions: result.total_questions,
-                    currentCategory: result.current_category,
-                });
-                return;
-            },
-            error: (error) => {
-                alert('Unable to load questions. Please try your request again');
-                return;
-            },
-        });
+                questions: result.questions,
+                totalQuestions: result.total_questions,
+                currentCategory: result.current_category,
+            });
+            })
+            .catch (error => {
+                alert('Unable to load questions. Please try your request again')
+            })
+            .finally(()=>{
+                return
+            })
     };
 
     questionAction = (id) => (action) => {
         if (action === 'DELETE') {
             if (window.confirm('are you sure you want to delete the question?')) {
-                $.ajax({
-                    url: `/api/v1/questions/${id}`, //TODO: update request URL
-                    type: 'DELETE',
-                    success: (result) => {
-                        this.getQuestions();
-                    },
-                    error: (error) => {
+                fetch(`/questions/${id}`, {method: 'DELETE'})
+                    .then(res => res.json())
+                    .then(result => {
+                        this.getQuestions()
+                    }).catch(error => {
                         alert('Unable to load questions. Please try your request again');
+                    }).finally(() => {
                         return;
-                    },
-                });
+                    })
             }
         }
     };
@@ -160,14 +152,14 @@ class QuestionView extends Component {
                 <div className='questions-list'>
                     <h2>Questions</h2>
                     {this.state.questions.map((q, ind) => (
-                            <Question
-                                key={q.id}
-                                question={q.question}
-                                answer={q.answer}
-                                category={this.state.categories.find(cat => cat.id == q.category)}
-                                difficulty={q.difficulty}
-                                questionAction={this.questionAction(q.id)}
-                            />
+                        <Question
+                            key={q.id}
+                            question={q.question}
+                            answer={q.answer}
+                            category={this.state.categories.find(cat => cat.id == q.category)}
+                            difficulty={q.difficulty}
+                            questionAction={this.questionAction(q.id)}
+                        />
                     ))}
                     <div className='pagination-menu'>{this.createPagination()}</div>
                 </div>
